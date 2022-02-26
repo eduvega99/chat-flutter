@@ -1,27 +1,30 @@
-import 'package:chat/screens/screens.dart';
 import 'package:flutter/material.dart';
 
+import 'package:provider/provider.dart';
+
 import 'package:chat/models/user.dart';
+import 'package:chat/screens/screens.dart';
+import 'package:chat/services/auth_service.dart';
 import 'package:chat/theme/app_theme.dart';
 
 
 class UsersScreen extends StatelessWidget {
 
   final users = [
-    User(isOnline: true, email: 'aaa', nombre: 'Claudia', uid: 'aaa'),
-    User(isOnline: false, email: 'aaa', nombre: 'Aa Papá', uid: 'aaa'),
-    User(isOnline: true, email: 'aaa', nombre: 'Mamá', uid: 'aaa'),
-    User(isOnline: true, email: 'aaa', nombre: 'Carla', uid: 'aaa'),
-    User(isOnline: false, email: 'aaa', nombre: 'Aitor', uid: 'aaa'),
-    User(isOnline: true, email: 'aaa', nombre: 'Rita', uid: 'aaa'),
-    User(isOnline: false, email: 'aaa', nombre: 'Rafa', uid: 'aaa'),
-    
+    User(isOnline: true, email: 'aaa', name: 'Claudia', uid: 'aaa'),
+    User(isOnline: false, email: 'aaa', name: 'Aa Papá', uid: 'aaa'),
+    User(isOnline: true, email: 'aaa', name: 'Mamá', uid: 'aaa'),
+    User(isOnline: true, email: 'aaa', name: 'Carla', uid: 'aaa'),
+    User(isOnline: false, email: 'aaa', name: 'Aitor', uid: 'aaa'),
+    User(isOnline: true, email: 'aaa', name: 'Rita', uid: 'aaa'),
+    User(isOnline: false, email: 'aaa', name: 'Rafa', uid: 'aaa'),
   ];
 
   UsersScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final authService = Provider.of<AuthService>(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Chats'),
@@ -32,7 +35,11 @@ class UsersScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon( Icons.logout ),
-            onPressed: () => Navigator.pushReplacementNamed(context, 'login')
+            onPressed: () {
+              // TODO: Disconnect from socket server
+              authService.logout();
+              Navigator.pushReplacementNamed(context, 'login');
+            }
           )
         ]
       ),
@@ -61,11 +68,11 @@ class _ContactListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(user.nombre),
+      title: Text(user.name),
       leading: CircleAvatar(
         foregroundColor: Colors.white,
         backgroundColor: AppTheme.primaryColor,
-        child: Text( user.nombre.substring(0, 2) ),
+        child: Text( user.name.substring(0, 2) ),
       ),
       trailing: Icon(
         Icons.circle, 

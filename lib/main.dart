@@ -1,8 +1,27 @@
-import 'package:chat/routes/app_routes.dart';
-import 'package:chat/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
-void main() => runApp( const MyApp() );
+import 'package:provider/provider.dart';
+
+import 'package:chat/routes/app_routes.dart';
+import 'package:chat/services/auth_service.dart';
+import 'package:chat/theme/app_theme.dart';
+
+void main() => runApp(const AppState());
+
+class AppState extends StatelessWidget {
+
+  const AppState({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: ( _ ) => AuthService())
+      ],
+      child: const MyApp(),
+    );
+  }
+}
 
 class MyApp extends StatelessWidget {
   

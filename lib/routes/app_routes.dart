@@ -5,7 +5,7 @@ import 'package:chat/screens/screens.dart';
 
 class AppRoutes {
 
-  static String initialRoute = 'login';
+  static String initialRoute = 'loading';
   
   static Map<String, Widget Function(BuildContext)> appRoutes = {
     'login':  ( _ ) => const LogInScreen(),

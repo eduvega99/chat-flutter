@@ -78,7 +78,6 @@ class _SendButton extends StatelessWidget {
           elevation: 1,
           child: const Icon( Icons.send, color: Colors.white ),
           onPressed: () {
-            print(textController.text);
             textController.clear();
           }
         ),
