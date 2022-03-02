@@ -4,39 +4,47 @@ import 'package:provider/provider.dart';
 
 import 'package:chat/models/user.dart';
 import 'package:chat/screens/screens.dart';
-import 'package:chat/services/auth_service.dart';
+import 'package:chat/services/services.dart';
 import 'package:chat/theme/app_theme.dart';
 
 
-class UsersScreen extends StatelessWidget {
+class UsersScreen extends StatefulWidget {
 
-  final users = [
-    User(isOnline: true, email: 'aaa', name: 'Claudia', uid: 'aaa'),
-    User(isOnline: false, email: 'aaa', name: 'Aa Papá', uid: 'aaa'),
-    User(isOnline: true, email: 'aaa', name: 'Mamá', uid: 'aaa'),
-    User(isOnline: true, email: 'aaa', name: 'Carla', uid: 'aaa'),
-    User(isOnline: false, email: 'aaa', name: 'Aitor', uid: 'aaa'),
-    User(isOnline: true, email: 'aaa', name: 'Rita', uid: 'aaa'),
-    User(isOnline: false, email: 'aaa', name: 'Rafa', uid: 'aaa'),
-  ];
+  const UsersScreen({Key? key}) : super(key: key);
 
-  UsersScreen({Key? key}) : super(key: key);
+  @override
+  State<UsersScreen> createState() => _UsersScreenState();
+}
+
+class _UsersScreenState extends State<UsersScreen> {
+  
+  final usersService = UsersService();
+  List<User>users = [];
+
+  @override
+  void initState() {
+    loadUsers();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     final authService = Provider.of<AuthService>(context);
+    final socketService = Provider.of<SocketService>(context);
+    final isOnline = socketService.serverStatus == ServerStatus.online;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Chats'),
-        leading: const Icon(
-          Icons.wifi, color: AppTheme.secondaryColor,
-          // Icons.wifi_off, color: Colors.red,
+        leading: Icon( 
+          isOnline ? Icons.wifi : Icons.wifi_off, 
+          color: isOnline ? AppTheme.secondaryColor :  Colors.red,
         ),
         actions: [
           IconButton(
             icon: const Icon( Icons.logout ),
             onPressed: () {
-              // TODO: Disconnect from socket server
+              socketService.disconnect();
               authService.logout();
               Navigator.pushReplacementNamed(context, 'login');
             }
@@ -45,9 +53,7 @@ class UsersScreen extends StatelessWidget {
       ),
 
       body: RefreshIndicator(
-        onRefresh: () { 
-          return Future( () => { } );
-        },
+        onRefresh: loadUsers,
         child: ListView.separated(
           physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
           itemCount: users.length, 
@@ -56,6 +62,11 @@ class UsersScreen extends StatelessWidget {
         ),
       )
     );
+  }
+
+  Future loadUsers() async {
+    users = await usersService.getUsers();
+    setState(() { });
   }
 }
 
@@ -67,6 +78,8 @@ class _ContactListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final chatService = Provider.of<ChatService>(context);
+
     return ListTile(
       title: Text(user.name),
       leading: CircleAvatar(
@@ -79,7 +92,10 @@ class _ContactListTile extends StatelessWidget {
         color: user.isOnline ? AppTheme.primaryColor : Colors.red,
         size: 10,
       ),
-      onTap: () => Navigator.push(context, _animateRoute())
+      onTap: () {
+        chatService.fromUser = user;
+        Navigator.push(context, _animateRoute());
+      }
     );
   }
 

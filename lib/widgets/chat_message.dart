@@ -1,5 +1,8 @@
+import 'package:animate_do/animate_do.dart';
+import 'package:chat/services/auth_service.dart';
 import 'package:chat/theme/app_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ChatMessage extends StatelessWidget {
 
@@ -14,10 +17,17 @@ class ChatMessage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: uid == '123'
-        ? Align(alignment: Alignment.centerRight, child: _Message(text: text, color: AppTheme.secondaryColor))
-        : Align(alignment: Alignment.centerLeft, child: _Message(text: text, color: AppTheme.primaryColor))
+    final authService = Provider.of<AuthService>(context);
+
+    return FadeIn(
+      child: SlideInUp(
+        from: 4,
+        child: Container(
+          child: uid == authService.user!.uid
+            ? Align(alignment: Alignment.centerRight, child: _Message(text: text, color: AppTheme.secondaryColor))
+            : Align(alignment: Alignment.centerLeft, child: _Message(text: text, color: AppTheme.primaryColor))
+        ),
+      ),
     );
   }
 }

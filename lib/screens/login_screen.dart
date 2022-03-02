@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:chat/helpers/show_alerts.dart';
-import 'package:chat/services/auth_service.dart';
+import 'package:chat/services/services.dart';
 import 'package:chat/widgets/widgets.dart';
 
 
@@ -42,7 +42,8 @@ class _LoginForm extends StatelessWidget {
   Widget build(BuildContext context) {
     
     final authService = Provider.of<AuthService>(context);
-    
+    final socketService = Provider.of<SocketService>(context);
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 30),
       child: Form(
@@ -74,6 +75,7 @@ class _LoginForm extends StatelessWidget {
                   FocusScope.of(context).unfocus();
                   final isLogged = await authService.login(_emailController.text, _passwordController.text);
                   if ( isLogged ) {
+                    socketService.connect();
                     Navigator.pushReplacementNamed(context,  'users');
                   } else {
                     showAlert(context, 'Error', 'Por favor, revise sus credenciales.');

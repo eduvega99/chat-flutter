@@ -10,8 +10,8 @@ class AppRoutes {
   static Map<String, Widget Function(BuildContext)> appRoutes = {
     'login':  ( _ ) => const LogInScreen(),
     'sign_up': ( _ ) => const SignUpScreen(),
-    'users':   ( _ ) => UsersScreen(),
-    'chat':    ( _ ) => ChatScreen(),
+    'users':   ( _ ) => const UsersScreen(),
+    'chat':    ( _ ) => const ChatScreen(),
     'loading': ( _ ) => const LoadingScreen(),
   };
 

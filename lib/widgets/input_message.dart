@@ -3,9 +3,14 @@ import 'package:flutter/material.dart';
 
 class InputMessage extends StatelessWidget {
 
-  final _textController = TextEditingController();
+  final TextEditingController textController;
+  final VoidCallback onPressed;
 
-  InputMessage({Key? key}) : super(key: key);
+  const InputMessage({
+    Key? key, 
+    required this.textController, 
+    required this.onPressed
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -16,11 +21,11 @@ class InputMessage extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          _MessageBox( textController: _textController ),
+          _MessageBox( textController: textController ),
 
           const SizedBox( width: 10 ),
 
-          _SendButton( textController: _textController )
+          _SendButton( textController: textController, onPressed: onPressed )
         ],
       ),
     );
@@ -62,10 +67,12 @@ class _MessageBox extends StatelessWidget {
 class _SendButton extends StatelessWidget {
 
   final TextEditingController textController;
-  
+  final VoidCallback onPressed;
+
   const _SendButton({ 
     Key? key, 
-    required this.textController 
+    required this.textController, 
+    required this.onPressed
   }) : super(key: key);
 
   @override
@@ -77,9 +84,7 @@ class _SendButton extends StatelessWidget {
           backgroundColor: AppTheme.primaryColor,
           elevation: 1,
           child: const Icon( Icons.send, color: Colors.white ),
-          onPressed: () {
-            textController.clear();
-          }
+          onPressed: onPressed
         ),
       ),
     );

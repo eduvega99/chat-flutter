@@ -1,4 +1,5 @@
 import 'package:chat/helpers/show_alerts.dart';
+import 'package:chat/services/services.dart';
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
@@ -84,6 +85,8 @@ class _SignUpForm extends StatelessWidget {
                   FocusScope.of(context).unfocus();
                   final isRegistered = await authService.register(_nameController.text, _emailController.text, _passwordController.text);
                   if ( isRegistered ) {
+                    final socketService = Provider.of<SocketService>(context, listen: false);
+                    socketService.connect();
                     Navigator.pushReplacementNamed(context,  'users');
                   } else {
                     showAlert(context, 'Problema con el registro', 'Por favor, revise que todos los campos son correctos. Si el error persiste, pruebe con otro email.');
